@@ -1,41 +1,59 @@
-import { redirect } from "next/navigation";
-import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
-import { EmptyState } from "@/components/empty-state";
+import { StatusView } from "@/components/status-view";
+import { getAccount, listCollaborationNotes } from "@/lib/buffer";
+import { getReviewById, managerView, saveReview } from "@/lib/reviews";
 import { getSession } from "@/lib/session";
-import { getAccount } from "@/lib/buffer";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
-export default async function ReviewStatusPage() {
+export default async function ReviewStatusPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const session = await getSession();
   if (!session) redirect("/?error=auth");
+  const { id } = await params;
+  const review = await getReviewById(id);
+  if (!review || review.accountId !== session.accountId) notFound();
+
+  if (review.submittedAt) {
+    let dirty = false;
+    for (const post of review.posts) {
+      if (post.noteId) continue;
+      try {
+        const notes = await listCollaborationNotes(session.accountId, post.postId);
+        const match = notes.find((n) => n.text.includes("via ReviewLink"));
+        if (match) {
+          post.noteId = match.id;
+          post.noteSyncedAt = match.createdAt ? Date.parse(match.createdAt) || Date.now() : Date.now();
+          post.noteError = null;
+          dirty = true;
+        }
+      } catch {
+        /* keep Redis state */
+      }
+    }
+    if (dirty) await saveReview(review);
+  }
+
   let name: string | null = null;
   let email: string | null = null;
+  let org: string | null = null;
   try {
     const account = await getAccount(session.accountId);
     name = account.name;
     email = account.email;
+    org = account.organizations[0]?.name ?? null;
   } catch {
     /* shell still renders */
   }
+
   return (
-    <AppShell name={name} email={email}>
-      <Link href="/app" className="mb-3 inline-flex items-center gap-1.5 text-[14px] font-semibold text-accent no-underline">
-        ← Back to queue
-      </Link>
-      <h1 className="m-0 text-[28px] font-bold tracking-tight">Review status</h1>
-      <div className="panel mt-6">
-        <EmptyState
-          title="This review isn’t ready yet"
-          body="The status page — per-post decisions, comments, and “Synced to Buffer as a note” — is next. Your queue and Buffer sign-in already work."
-          action={
-            <Link href="/app" className="btn btn-secondary">
-              Return to dashboard
-            </Link>
-          }
-        />
-      </div>
+    <AppShell name={name} email={email} orgName={org}>
+      <StatusView initial={managerView(review)} />
     </AppShell>
   );
 }

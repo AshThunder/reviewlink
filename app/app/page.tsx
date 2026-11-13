@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
-import { Dashboard } from "@/components/dashboard";
+import { QueueDashboard } from "@/components/queue-dashboard";
 import { ErrorState } from "@/components/empty-state";
 import {
   BufferApiError,
@@ -11,6 +11,7 @@ import {
 } from "@/lib/buffer";
 import { DEFAULT_WEEK } from "@/lib/dates";
 import { getSession } from "@/lib/session";
+import { listReviews, managerView } from "@/lib/reviews";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -86,10 +87,11 @@ export default async function AppPage({
         email={account.email}
         orgName={account.organizations[0]?.name}
       >
-        <Dashboard
+        <QueueDashboard
           account={account}
           channels={channels}
           posts={posts.posts}
+          reviews={(await listReviews(session.accountId)).map(managerView)}
           selectedChannelId={selectedChannelId}
           rangeStart={rangeStart}
           rangeEnd={rangeEnd}

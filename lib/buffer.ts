@@ -505,3 +505,109 @@ export async function getScheduledPosts(input: {
 export function usableChannels(channels: BufferChannel[]): BufferChannel[] {
   return channels.filter((ch) => !ch.isDisconnected && !ch.isLocked);
 }
+
+const CREATE_NOTE = `
+  mutation CreateReviewNote($input: CreateCollaborationNoteInput!) {
+    createCollaborationNote(input: $input) {
+      __typename
+      ... on CreateCollaborationNoteSuccess {
+        edge { cursor node { id text createdAt } }
+      }
+      ... on MutationError { message }
+    }
+  }
+`;
+
+const LIST_NOTES = `
+  query GetCollaborationNotes($input: CollaborationNotesInput!) {
+    collaborationNotes(first: 50, input: $input) {
+      edges { node { id text createdAt } }
+    }
+  }
+`;
+
+export type CollaborationNote = {
+  id: string;
+  text: string;
+  createdAt: string | null;
+};
+
+export type NoteWriteResult =
+  | { ok: true; noteId: string; createdAt: string | null }
+  | { ok: false; error: string; code?: string };
+
+type CreateNoteData = {
+  createCollaborationNote: {
+    __typename: string;
+    edge?: { node?: { id?: string; text?: string; createdAt?: string } };
+    message?: string;
+  } | null;
+};
+
+export async function createCollaborationNote(
+  accountId: string,
+  postId: string,
+  text: string,
+): Promise<NoteWriteResult> {
+  try {
+    const data = await graphql<CreateNoteData>(accountId, CREATE_NOTE, {
+      input: {
+        subject: { postId },
+        text,
+        annotations: [],
+      },
+    });
+    const result = data.createCollaborationNote;
+    const typename = result?.__typename ?? "";
+    if (typename === "CreateCollaborationNoteSuccess" && result?.edge?.node?.id) {
+      return {
+        ok: true,
+        noteId: result.edge.node.id,
+        createdAt: result.edge.node.createdAt ?? null,
+      };
+    }
+    return {
+      ok: false,
+      error: result?.message || typename || "Buffer did not create the note.",
+    };
+  } catch (err) {
+    const code = err instanceof BufferApiError ? err.code : undefined;
+    const message = err instanceof Error ? err.message : "Failed to create a Buffer note.";
+    return { ok: false, error: message, code };
+  }
+}
+
+export async function listCollaborationNotes(
+  accountId: string,
+  postId: string,
+): Promise<CollaborationNote[]> {
+  try {
+    const data = await graphql<{
+      collaborationNotes?: {
+        edges?: { node?: { id?: string; text?: string; createdAt?: string } }[];
+      };
+    }>(accountId, LIST_NOTES, { input: { subject: { postId } } });
+    return (data.collaborationNotes?.edges ?? [])
+      .map((e) => e.node)
+      .filter((n): n is { id: string; text: string; createdAt?: string } => Boolean(n?.id))
+      .map((n) => ({ id: n.id, text: n.text ?? "", createdAt: n.createdAt ?? null }));
+  } catch (err) {
+    console.warn(
+      JSON.stringify({
+        event: "collaboration_notes_list_failed",
+        message: err instanceof Error ? err.message : "unknown",
+      }),
+    );
+    return [];
+  }
+}
+
+export async function findExistingReviewNote(
+  accountId: string,
+  postId: string,
+  text: string,
+): Promise<CollaborationNote | null> {
+  const notes = await listCollaborationNotes(accountId, postId);
+  return notes.find((n) => n.text === text) ?? notes.find((n) => n.text.includes("via ReviewLink")) ?? null;
+}
+

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "dev:https": "next dev --experimental-https",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "node --experimental-strip-types --test lib/review-logic.test.ts"
   },
   "dependencies": {
     "@upstash/redis": "^1.41.0",
