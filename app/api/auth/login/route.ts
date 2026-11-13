@@ -26,7 +26,9 @@ export async function GET(req: NextRequest) {
   const origin = new URL(req.url).origin;
   try {
     if (await rateLimited(clientIp(req))) {
-      return NextResponse.redirect(new URL("/?error=rate", origin));
+      const res = NextResponse.redirect(new URL("/?error=rate", origin));
+      res.headers.set("Cache-Control", "private, no-store");
+      return res;
     }
 
     const { verifier, challenge } = createPkcePair();
@@ -45,7 +47,9 @@ export async function GET(req: NextRequest) {
       codeChallenge: challenge,
       promptConsent,
     });
-    return NextResponse.redirect(url, { status: 302 });
+    const res = NextResponse.redirect(url, { status: 302 });
+    res.headers.set("Cache-Control", "private, no-store, max-age=0, must-revalidate");
+    return res;
   } catch (err) {
     console.error(
       JSON.stringify({
@@ -53,6 +57,8 @@ export async function GET(req: NextRequest) {
         message: err instanceof Error ? err.message : "unknown",
       }),
     );
-    return NextResponse.redirect(new URL("/?error=login", origin));
+    const res = NextResponse.redirect(new URL("/?error=login", origin));
+    res.headers.set("Cache-Control", "private, no-store");
+    return res;
   }
 }
