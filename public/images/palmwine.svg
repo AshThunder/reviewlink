@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" role="img" aria-label="Palmwine happy hour at Casa Lekki">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0%" stop-color="#3A2450"/>
+      <stop offset="45%" stop-color="#7A3A2A"/>
+      <stop offset="100%" stop-color="#C46A28"/>
+    </linearGradient>
+    <radialGradient id="wine" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#F4E2A8"/>
+      <stop offset="50%" stop-color="#E8C45A"/>
+      <stop offset="100%" stop-color="#C47A20"/>
+    </radialGradient>
+    <linearGradient id="cal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8C9A0"/>
+      <stop offset="100%" stop-color="#8A5A32"/>
+    </linearGradient>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="9"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.1"/></feComponentTransfer><feBlend in="SourceGraphic" mode="multiply"/></filter>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <!-- evening glow -->
+  <ellipse cx="560" cy="80" rx="200" ry="100" fill="#F0A04A" opacity="0.35"/>
+  <ellipse cx="400" cy="440" rx="180" ry="22" fill="#1A0A08" opacity="0.4"/>
+  <!-- calabash -->
+  <ellipse cx="400" cy="340" rx="150" ry="90" fill="url(#cal)"/>
+  <ellipse cx="400" cy="250" rx="170" ry="120" fill="url(#cal)"/>
+  <ellipse cx="400" cy="240" rx="148" ry="100" fill="#6A3A18"/>
+  <ellipse cx="400" cy="236" rx="140" ry="92" fill="url(#wine)"/>
+  <ellipse cx="360" cy="210" rx="50" ry="20" fill="#FFF6D0" opacity="0.4"/>
+  <!-- foam -->
+  <ellipse cx="400" cy="160" rx="110" ry="22" fill="#F8EFC0" opacity="0.65"/>
+  <circle cx="350" cy="162" r="8" fill="#FBF6DC" opacity="0.7"/>
+  <circle cx="430" cy="156" r="6" fill="#FBF6DC" opacity="0.7"/>
+  <circle cx="390" cy="150" r="5" fill="#FBF6DC" opacity="0.6"/>
+  <!-- small chops plate -->
+  <ellipse cx="620" cy="380" rx="90" ry="30" fill="#D4B08A"/>
+  <ellipse cx="600" cy="368" rx="16" ry="10" fill="#C44A1C"/>
+  <ellipse cx="630" cy="372" rx="14" ry="9" fill="#A83814"/>
+  <ellipse cx="650" cy="366" rx="12" ry="8" fill="#E8C84A"/>
+  <rect width="800" height="500" filter="url(#grain)" opacity="0.35"/>
+</svg>

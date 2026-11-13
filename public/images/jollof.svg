@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" role="img" aria-label="A bowl of jollof rice at Casa Lekki">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#F6D7A8"/>
+      <stop offset="55%" stop-color="#E59A4A"/>
+      <stop offset="100%" stop-color="#B14A1C"/>
+    </linearGradient>
+    <radialGradient id="rice" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#F4B266"/>
+      <stop offset="45%" stop-color="#E06A22"/>
+      <stop offset="100%" stop-color="#A8330E"/>
+    </radialGradient>
+    <linearGradient id="ceramic" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FBF3E8"/>
+      <stop offset="100%" stop-color="#D4B896"/>
+    </linearGradient>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="4" result="n"/><feColorMatrix in="n" type="saturate" values="0" result="g"/><feComponentTransfer in="g" result="a"><feFuncA type="linear" slope="0.09"/></feComponentTransfer><feBlend in="SourceGraphic" in2="a" mode="multiply"/></filter>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <ellipse cx="400" cy="438" rx="260" ry="26" fill="#5A2A10" opacity="0.28"/>
+  <path d="M148 268c16 128 96 188 252 188s236-60 252-188c-28 36-130 58-252 58S176 304 148 268Z" fill="#C4A882"/>
+  <ellipse cx="400" cy="250" rx="278" ry="122" fill="url(#ceramic)"/>
+  <ellipse cx="400" cy="254" rx="248" ry="102" fill="#8A3510"/>
+  <ellipse cx="400" cy="250" rx="236" ry="94" fill="url(#rice)"/>
+  <ellipse cx="330" cy="242" rx="86" ry="48" fill="#F0A04A" opacity="0.55"/>
+  <ellipse cx="470" cy="268" rx="78" ry="40" fill="#C44714" opacity="0.5"/>
+  <ellipse cx="400" cy="220" rx="70" ry="28" fill="#F8C57A" opacity="0.4"/>
+  <!-- stew pools and garnish -->
+  <ellipse cx="355" cy="258" rx="28" ry="14" fill="#8F1E08" opacity="0.7"/>
+  <ellipse cx="455" cy="238" rx="22" ry="11" fill="#8F1E08" opacity="0.65"/>
+  <ellipse cx="410" cy="280" rx="18" ry="9" fill="#6B1606" opacity="0.55"/>
+  <circle cx="310" cy="230" r="10" fill="#2F6B32"/>
+  <circle cx="322" cy="236" r="7" fill="#4E9448"/>
+  <circle cx="500" cy="255" r="9" fill="#2F6B32"/>
+  <circle cx="488" cy="264" r="6" fill="#5AAA4E"/>
+  <ellipse cx="440" cy="300" rx="16" ry="8" fill="#E8C04A"/>
+  <ellipse cx="360" cy="300" rx="14" ry="7" fill="#E8C04A"/>
+  <ellipse cx="390" cy="205" rx="22" ry="8" fill="#F3E2B0" opacity="0.55"/>
+  <rect width="800" height="500" filter="url(#grain)" opacity="0.35" style="pointer-events:none"/>
+</svg>

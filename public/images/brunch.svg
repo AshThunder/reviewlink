@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" role="img" aria-label="Weekend asun platter and brunch at Casa Lekki">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F2C9A0"/>
+      <stop offset="100%" stop-color="#8E3B1A"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8C9A0"/>
+      <stop offset="100%" stop-color="#B07A42"/>
+    </linearGradient>
+    <radialGradient id="meat" cx="40%" cy="40%" r="70%"><stop offset="0%" stop-color="#E07840"/><stop offset="60%" stop-color="#9C2E12"/><stop offset="100%" stop-color="#4A1408"/></radialGradient>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2" seed="11"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.1"/></feComponentTransfer><feBlend in="SourceGraphic" mode="multiply"/></filter>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <ellipse cx="400" cy="430" rx="300" ry="30" fill="#3A1608" opacity="0.28"/>
+  <!-- wooden board -->
+  <rect x="130" y="140" width="540" height="280" rx="28" fill="url(#wood)"/>
+  <rect x="148" y="156" width="504" height="248" rx="20" fill="#C9955C" opacity="0.35"/>
+  <!-- asun pieces -->
+  <ellipse cx="300" cy="250" rx="70" ry="42" fill="url(#meat)" transform="rotate(-18 300 250)"/>
+  <ellipse cx="380" cy="230" rx="64" ry="38" fill="url(#meat)" transform="rotate(12 380 230)"/>
+  <ellipse cx="450" cy="270" rx="72" ry="40" fill="url(#meat)" transform="rotate(-8 450 270)"/>
+  <ellipse cx="340" cy="310" rx="58" ry="34" fill="url(#meat)" transform="rotate(22 340 310)"/>
+  <ellipse cx="500" cy="310" rx="54" ry="32" fill="url(#meat)" transform="rotate(-25 500 310)"/>
+  <ellipse cx="420" cy="330" rx="48" ry="28" fill="#6A1C0C"/>
+  <!-- char highlights -->
+  <ellipse cx="290" cy="240" rx="16" ry="8" fill="#2A0C06" opacity="0.5"/>
+  <ellipse cx="470" cy="260" rx="14" ry="7" fill="#2A0C06" opacity="0.45"/>
+  <!-- peppers and onion -->
+  <circle cx="250" cy="300" r="12" fill="#2F7A32"/>
+  <circle cx="540" cy="240" r="11" fill="#C62828"/>
+  <circle cx="230" cy="230" r="10" fill="#F0E6C8"/>
+  <circle cx="560" cy="340" r="9" fill="#2F7A32"/>
+  <!-- lime wedge -->
+  <path d="M580 200 A40 40 0 0 1 620 250 L580 250 Z" fill="#C6D94E"/>
+  <path d="M580 200 A40 40 0 0 1 620 250 L580 250 Z" fill="none" stroke="#8AA02A" stroke-width="2"/>
+  <rect width="800" height="500" filter="url(#grain)" opacity="0.32"/>
+</svg>

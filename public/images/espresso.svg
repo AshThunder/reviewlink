@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" role="img" aria-label="A double espresso at Casa Lekki, early morning">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E8D5C4"/>
+      <stop offset="50%" stop-color="#B08968"/>
+      <stop offset="100%" stop-color="#5C3A28"/>
+    </linearGradient>
+    <linearGradient id="cup" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFDF8"/>
+      <stop offset="100%" stop-color="#E6D8C4"/>
+    </linearGradient>
+    <radialGradient id="coffee" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#5A2E18"/>
+      <stop offset="70%" stop-color="#1C0C08"/>
+      <stop offset="100%" stop-color="#0C0604"/>
+    </radialGradient>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="3"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.09"/></feComponentTransfer><feBlend in="SourceGraphic" mode="multiply"/></filter>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <!-- morning window light -->
+  <ellipse cx="200" cy="80" rx="220" ry="120" fill="#F8EDE0" opacity="0.45"/>
+  <ellipse cx="400" cy="430" rx="200" ry="22" fill="#2A160E" opacity="0.28"/>
+  <!-- saucer -->
+  <ellipse cx="400" cy="370" rx="200" ry="48" fill="#EFE4D4"/>
+  <ellipse cx="400" cy="364" rx="160" ry="34" fill="#F7F0E6"/>
+  <ellipse cx="400" cy="364" rx="70" ry="16" fill="#E8D8C4"/>
+  <!-- cup -->
+  <path d="M280 200c0-10 20-20 120-20s120 10 120 20v120c0 50-50 80-120 80s-120-30-120-80V200Z" fill="url(#cup)"/>
+  <ellipse cx="400" cy="200" rx="120" ry="36" fill="#FBF7F0"/>
+  <ellipse cx="400" cy="208" rx="102" ry="28" fill="url(#coffee)"/>
+  <ellipse cx="370" cy="200" rx="36" ry="10" fill="#C4A07A" opacity="0.45"/>
+  <!-- crema ring -->
+  <ellipse cx="400" cy="208" rx="102" ry="28" fill="none" stroke="#8A5A32" stroke-width="5" opacity="0.55"/>
+  <!-- handle -->
+  <path d="M520 230c70 0 90 40 90 80s-30 80-90 70" fill="none" stroke="#E6D8C4" stroke-width="22" stroke-linecap="round"/>
+  <path d="M520 230c70 0 90 40 90 80s-30 80-90 70" fill="none" stroke="#FBF7F0" stroke-width="12" stroke-linecap="round"/>
+  <!-- steam -->
+  <path d="M360 160c0-20 20-20 20-40s-18-22-18-38" fill="none" stroke="#FBF7F0" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+  <path d="M400 150c0-22 18-22 18-42s-16-24-16-40" fill="none" stroke="#FBF7F0" stroke-width="4" stroke-linecap="round" opacity="0.45"/>
+  <path d="M438 160c0-18 16-20 16-38s-14-22-14-36" fill="none" stroke="#FBF7F0" stroke-width="3.5" stroke-linecap="round" opacity="0.4"/>
+  <rect width="800" height="500" filter="url(#grain)" opacity="0.3"/>
+</svg>
