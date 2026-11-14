@@ -73,18 +73,27 @@ export function StatusView({ initial }: { initial: ManagerReview }) {
 
   return (
     <>
-      <Link href="/app" className="mb-3 inline-flex items-center gap-1.5 text-[14px] font-semibold text-accent no-underline">
+      <Link href="/app" className="back-link">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M10 3 L5 8 L10 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        Back to queue
+        Back to dashboard
       </Link>
 
       <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="m-0 text-[28px] font-bold tracking-tight">
+          <h1 className="m-0 text-[24px] leading-tight tracking-tight sm:text-[28px]">
             {review.clientName} · {weekLabel(review.rangeStart, review.rangeEnd)}
           </h1>
+          <p className="status-summary">
+            {review.status === "revoked"
+              ? "This link was revoked. Your client can no longer open it."
+              : review.status === "expired"
+                ? "This link has expired."
+                : review.submittedAt
+                  ? `${counts.approved} approved${counts.changes ? `, ${counts.changes} need${counts.changes === 1 ? "s" : ""} changes` : ""}. ${synced === review.posts.length ? "Notes added in Buffer." : failed ? `${failed} note${failed === 1 ? "" : "s"} couldn’t reach Buffer yet — tap Resync.` : "Adding notes in Buffer…"}`
+                  : "Waiting for your client. Send them the link below."}
+          </p>
           <p className="m-0 mt-1.5 text-[15px] text-muted">
             {review.submittedAt && review.reviewerLabel
               ? `Reviewed by ${review.reviewerLabel} · ${formatDueAt(new Date(review.submittedAt).toISOString(), tz)}`

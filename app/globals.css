@@ -908,3 +908,35 @@ h1, h2, h3, .hero-title, .section-title { font-weight: 500 !important; }
 .stack-card h3 { font-weight: 500; font-size: 18px; }
 .stack-card li::marker { color: #626260; }
 .kbd-code { background: #f5f1ec; border-color: #ebe7e1; color: #111; border-radius: 4px; }
+/* ---- Responsive + simplification pass ---- */
+.lp-hero-grid > *, .lp-hero-side > *, .lp-steps > *, .lp-split > *, .mk-panel, .mk-row > span:last-child, .mk-note > span:last-child { min-width: 0; }
+.lp-steps { list-style: none; padding: 0; }
+.lp-n { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; background: #111; color: #fff; font-size: 14px; margin-right: 10px; vertical-align: 3px; }
+.mk-perm { display: grid; gap: 8px; padding: 14px; }
+.mk-perm .mk-line { display: inline-flex; gap: 8px; align-items: center; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 15px; font-weight: 500; color: #111; text-decoration: none; margin-bottom: 4px; }
+.back-link:hover { text-decoration: underline; }
+.status-summary { margin: 8px 0 0; font-size: 18px; line-height: 1.4; color: #111; }
+.review-intro { margin: 12px 0 0; font-size: 15px; line-height: 1.5; color: #111; background: #fff; border: 1px solid #d3cec6; border-radius: 12px; padding: 12px 14px; }
+.review-col { padding-bottom: 220px; }
+.site-head .btn { white-space: nowrap; }
+@media (max-width: 480px) {
+  .site-head { height: 64px; }
+  .lp-h1 { font-size: 38px; letter-spacing: -1px; }
+  .lp-h2 { font-size: 30px; letter-spacing: -0.8px; }
+  .lp-h3 { font-size: 20px; }
+  .lp-hero-tile { padding: 12px; }
+  .lp-hero-side { display: none; }
+  .lp-step-tile { min-height: 0; padding: 14px; }
+  .lp-cta { flex-direction: column; align-items: stretch; }
+  .lp-cta .btn { width: 100%; }
+}
+.dash-step { display: flex; align-items: center; gap: 10px; margin: 32px 0 12px; font-size: 20px; font-weight: 500; letter-spacing: -0.3px; }
+.dash-step:first-of-type { margin-top: 8px; }
+.dash-step > span { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; background: #111; color: #fff; font-size: 14px; flex: none; }
+.success-panel .btn-ghost[aria-label="Dismiss"] { min-width: 44px; min-height: 44px; }
+.panel .btn-ghost { min-height: 44px; padding: 0 8px; }
+.panel select, .panel input:not([type="checkbox"]), select { min-height: 44px; max-width: 100%; }
+.success-panel h2 { font-weight: 500 !important; }
+#main select { width: 100%; }
+@media (max-width: 640px) { .success-panel .grid > * { width: 100%; } }

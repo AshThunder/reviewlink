@@ -253,7 +253,10 @@ export function ReviewExperience({
             {tallies.total === 1 ? "post" : "posts"} for your review
           </p>
           <h1 className="m-0 mt-1 text-[24px] font-bold leading-tight tracking-tight">{initial.clientName}</h1>
-          <p className="m-0 mt-0.5 text-[14px] text-muted">{week} · no Buffer account needed</p>
+          <p className="m-0 mt-0.5 text-[14px] text-muted">{week}</p>
+          <p className="review-intro">
+            {initial.sharedBy} wants your OK on {tallies.total} {tallies.total === 1 ? "post" : "posts"}. Approve each one or ask for changes, then tap Send. No account needed.
+          </p>
         </header>
 
         <section
@@ -403,7 +406,8 @@ export function ReviewExperience({
 
         <div className="sticky-bar">
           <div className="mb-1.5 flex items-center justify-between">
-            <p className="m-0 text-[13px] font-semibold">
+            <p className="m-0 text-[13px] font-medium">
+              <span className="text-muted">Step 3 · </span>
               {tallies.reviewed} of {tallies.total} reviewed
             </p>
             <span className="text-[12px] font-medium text-muted">

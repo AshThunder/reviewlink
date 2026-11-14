@@ -3,7 +3,7 @@ import { OAuthBanner } from "@/components/oauth-banner";
 import { getSession } from "@/lib/session";
 import Link from "next/link";
 import { HowBuilt } from "@/components/how-built";
-import { LinkMock, NoteMock, QueueMock, ReviewMock } from "@/components/mockups";
+import { ConnectMock, LinkMock, NoteMock, QueueMock, ReviewMock } from "@/components/mockups";
 
 export const dynamic = "force-dynamic";
 
@@ -30,13 +30,12 @@ export default async function LandingPage({
           <Brand />
           <nav className="hidden items-center gap-8 text-[15px] md:flex" aria-label="Primary">
             <a href="#how" className="lp-nav">How it works</a>
-            <a href="#for" className="lp-nav">Who it’s for</a>
-            <a href={REPO} className="lp-nav">GitHub</a>
+                        <a href={REPO} className="lp-nav">GitHub</a>
           </nav>
           {session ? (
-            <Link href="/app" className="btn btn-secondary">Dashboard</Link>
+            <Link href="/app" className="btn btn-primary">Dashboard</Link>
           ) : (
-            <a href="/api/auth/login" className="btn btn-secondary">Sign in</a>
+            <a href="/api/auth/login" className="btn btn-primary">Connect Buffer</a>
           )}
         </header>
 
@@ -50,7 +49,6 @@ export default async function LandingPage({
             </p>
             <div className="lp-ctas">
               {cta}
-              <a href="#how" className="btn btn-secondary">See how it works</a>
             </div>
             <p className="lp-fine">Your client never creates an account. ReviewLink can’t edit your posts.</p>
           </section>
@@ -67,38 +65,24 @@ export default async function LandingPage({
 
           <section id="how" className="lp-section" aria-labelledby="how-h">
             <p className="lp-eyebrow">How it works</p>
-            <h2 id="how-h" className="lp-h2">From queue to sign-off in three steps.</h2>
-            <div className="lp-steps">
-              <article>
-                <div className="lp-tile lp-step-tile"><QueueMock /></div>
-                <h3 className="lp-h3">1. Pick your posts</h3>
-                <p className="lp-body">Connect Buffer and choose the scheduled posts your client should see for the week.</p>
-              </article>
-              <article>
+            <h2 id="how-h" className="lp-h2">Three steps. About two minutes.</h2>
+            <ol className="lp-steps">
+              <li>
+                <div className="lp-tile lp-step-tile"><ConnectMock /></div>
+                <h3 className="lp-h3"><span className="lp-n">1</span>Connect Buffer</h3>
+                <p className="lp-body">Sign in with your Buffer account. ReviewLink only reads your scheduled posts.</p>
+              </li>
+              <li>
                 <div className="lp-tile lp-step-tile"><LinkMock /></div>
-                <h3 className="lp-h3">2. Share one link</h3>
-                <p className="lp-body">Send it on WhatsApp or email. It opens on any phone, with no login and no app.</p>
-              </article>
-              <article>
+                <h3 className="lp-h3"><span className="lp-n">2</span>Pick posts and share a link</h3>
+                <p className="lp-body">Choose the week’s posts and send one private link on WhatsApp or email.</p>
+              </li>
+              <li>
                 <div className="lp-tile lp-step-tile"><NoteMock /></div>
-                <h3 className="lp-h3">3. Decisions land in Buffer</h3>
-                <p className="lp-body">Each approval or change request appears as a note on the post, where your team already works.</p>
-              </article>
-            </div>
-          </section>
-
-          <section id="for" className="lp-section lp-split" aria-labelledby="for-h">
-            <div>
-              <p className="lp-eyebrow">Who it’s for</p>
-              <h2 id="for-h" className="lp-h2">Anyone who needs a yes before posting.</h2>
-              <p className="lp-lead">Freelancers, agencies, and creators working with a brand, a boss, or a partner who isn’t in Buffer.</p>
-            </div>
-            <dl className="lp-list">
-              <div><dt>No more screenshot threads</dt><dd>One tidy link instead of a dozen images in a chat.</dd></div>
-              <div><dt>Feedback where you work</dt><dd>Comments arrive as notes on the exact Buffer post.</dd></div>
-              <div><dt>Know who said yes</dt><dd>Every decision carries the reviewer’s name and a clear status.</dd></div>
-              <div><dt>Made for phones</dt><dd>Clients finish in a minute, in their own time zone.</dd></div>
-            </dl>
+                <h3 className="lp-h3"><span className="lp-n">3</span>Your client approves</h3>
+                <p className="lp-body">They approve or ask for changes on their phone. Each decision shows up as a note on the post in Buffer.</p>
+              </li>
+            </ol>
           </section>
 
           <section className="lp-tile lp-cta" aria-labelledby="cta-h">

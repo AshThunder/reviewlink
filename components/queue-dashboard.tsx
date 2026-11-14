@@ -43,72 +43,20 @@ export function QueueDashboard({
     () => posts.filter((p) => selected[p.id]).map((p) => p.id),
     [posts, selected],
   );
-  const [open, setOpen] = useState(false);
+
   const [justCreated, setJustCreated] = useState<{ id: string; url: string; clientName: string } | null>(initialCreated);
+
+  const defaultName =
+    channels.find((c) => c.id === selectedChannelId)?.displayName || channels[0]?.displayName || "";
 
   return (
     <>
-      <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="m-0 text-[26px] font-bold leading-tight tracking-tight sm:text-[28px]">Get this week approved</h1>
-          <p className="m-0 mt-1.5 text-[15px] text-muted">
-            Pick posts from your Buffer queue, send one private link, and watch approvals come back as notes.
-          </p>
-        </div>
-        <div className="hidden lg:block">
-        <button
-          type="button"
-          className="btn btn-primary"
-          disabled={selectedIds.length === 0}
-          title={selectedIds.length === 0 ? "Select at least one scheduled post" : "Create a private review link"}
-          onClick={() => setOpen(true)}
-        >
-          Create review link
-        </button>
-        </div>
+      <div className="mb-6">
+        <h1 className="m-0 text-[26px] leading-tight tracking-tight sm:text-[32px]">Get this week approved</h1>
+        <p className="m-0 mt-1.5 text-[15px] text-muted">Three steps: choose posts, create a link, send it to your client.</p>
       </div>
 
-      {justCreated ? (
-        <section className="success-panel anim-fade-up mb-5" aria-live="polite">
-          <div className="flex items-start gap-3">
-            <span className="grid h-9 w-9 flex-none place-items-center rounded-[10px] bg-accent text-white" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 8.2 L6.4 11.5 L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </span>
-            <div className="min-w-0 flex-1">
-              <h2 className="m-0 text-[17px] font-bold tracking-tight">Review link ready for {justCreated.clientName}</h2>
-              <p className="m-0 mt-0.5 text-[14px] text-muted">Send it on WhatsApp or email. Private, no login, expires in 30 days.</p>
-            </div>
-            <button type="button" className="btn-ghost -mr-1 rounded-[8px] px-2 text-[20px] leading-none text-muted" aria-label="Dismiss" onClick={() => setJustCreated(null)}>×</button>
-          </div>
-          <div className="url-box mt-3" title={justCreated.url}>{justCreated.url}</div>
-          <div className="mt-3 grid grid-cols-2 gap-2 sm:flex">
-            <CopyButton value={justCreated.url} className="btn btn-primary" />
-            <a className="btn btn-secondary" href={whatsappShareUrl(justCreated.url, justCreated.clientName)} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-            <Link href={`/app/reviews/${justCreated.id}`} className="btn btn-ghost col-span-2 sm:col-span-1">Track status →</Link>
-          </div>
-        </section>
-      ) : null}
-
-      <section className="panel mb-6" aria-labelledby="links-h">
-        <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
-          <h2 id="links-h" className="m-0 flex items-center gap-2 text-[16px] font-bold">
-            Review links
-            <span className="chip chip-accent">{reviews.length}</span>
-          </h2>
-          <span className="text-[12.5px] font-medium text-muted">Approvals land as Buffer notes</span>
-        </div>
-        {reviews.length === 0 ? (
-          <EmptyState
-            title="No review links yet"
-            body="Select posts below and tap Create review link. Progress — approved, pending, changes — shows up right here."
-          />
-        ) : (
-          <div className="links-grid">
-            {reviews.map((r) => <LinkCard key={r.id} review={r} />)}
-          </div>
-        )}
-      </section>
-
+      <h2 className="dash-step"><span>1</span>Choose posts</h2>
       {pausedWarning ? (
         <div
           role="status"
@@ -121,10 +69,9 @@ export function QueueDashboard({
       {channels.length > 0 ? (
         <Filters channels={channels} selectedChannelId={selectedChannelId} />
       ) : null}
-
-      <section className="panel mb-24 lg:mb-0" aria-labelledby="posts-h">
-          <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
-            <h2 id="posts-h" className="m-0 text-[15px] font-semibold">
+      <section className="panel" aria-labelledby="posts-h">
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-border px-4 py-3">
+            <h2 id="posts-h" className="m-0 text-[15px] font-medium">
               Scheduled posts
             </h2>
             <div className="flex items-center gap-3 text-[13px] font-medium text-muted">
@@ -141,7 +88,7 @@ export function QueueDashboard({
                 </button>
               ) : null}
               <span>
-                {selectedIds.length}/{posts.length} selected · {label}
+                {selectedIds.length} of {posts.length} selected
               </span>
             </div>
           </div>
@@ -162,8 +109,8 @@ export function QueueDashboard({
             />
           ) : posts.length === 0 ? (
             <EmptyState
-              title="No scheduled posts in this range"
-              body={`Schedule at least a few posts in Buffer for ${label}, then refresh. Those posts become the review your client will see.`}
+              title="No scheduled posts this week"
+              body={`Schedule some posts in Buffer for ${label}, then refresh this page.`}
               action={
                 <a className="btn btn-secondary" href="https://publish.buffer.com" target="_blank" rel="noopener noreferrer">
                   Schedule posts in Buffer
@@ -220,43 +167,154 @@ export function QueueDashboard({
           )}
         </section>
 
-      {posts.length > 0 ? (
-        <div className="dash-sticky lg:hidden">
-          <button
-            type="button"
-            className="btn btn-primary w-full"
-            disabled={selectedIds.length === 0}
-            onClick={() => setOpen(true)}
-          >
-            Create review link · {selectedIds.length} {selectedIds.length === 1 ? "post" : "posts"}
-          </button>
-        </div>
-      ) : null}
+      <h2 className="dash-step"><span>2</span>Name the client and create the link</h2>
+      <InlineCreate
+        key={justCreated?.id ?? "new"}
+        postIds={selectedIds}
+        channels={channels}
+        selectedChannelId={selectedChannelId}
+        rangeStart={rangeStart}
+        rangeEnd={rangeEnd}
+        defaultName={defaultName}
+        disabled={posts.length === 0}
+        onCreated={(c) => {
+          setJustCreated(c);
+          window.setTimeout(() => document.getElementById("step-3")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+        }}
+      />
 
-      {open ? (
-        <CreateLinkDialog
-          posts={posts.filter((p) => selectedIds.includes(p.id))}
-          postIds={selectedIds}
-          channels={channels}
-          selectedChannelId={selectedChannelId}
-          rangeStart={rangeStart}
-          rangeEnd={rangeEnd}
-          defaultName={
-            channels.find((c) => c.id === selectedChannelId)?.displayName ||
-            channels[0]?.displayName ||
-            "Scheduled posts"
-          }
-          onClose={() => setOpen(false)}
-          onCreated={(c) => {
-            setJustCreated(c);
-            setOpen(false);
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }}
-        />
-      ) : null}
+      <h2 id="step-3" className="dash-step"><span>3</span>Send it to your client</h2>
+      {justCreated ? (
+        <section className="success-panel anim-fade-up mb-5" aria-live="polite">
+          <div className="flex items-start gap-3">
+            <span className="grid h-9 w-9 flex-none place-items-center rounded-[10px] bg-accent text-white" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 8.2 L6.4 11.5 L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </span>
+            <div className="min-w-0 flex-1">
+              <h2 className="m-0 text-[17px] font-bold tracking-tight">Review link ready for {justCreated.clientName}</h2>
+              <p className="m-0 mt-0.5 text-[14px] text-muted">Send it on WhatsApp or email. Private, no login, expires in 30 days.</p>
+            </div>
+            <button type="button" className="btn-ghost -mr-1 rounded-[8px] px-2 text-[20px] leading-none text-muted" aria-label="Dismiss" onClick={() => setJustCreated(null)}>×</button>
+          </div>
+          <div className="url-box mt-3" title={justCreated.url}>{justCreated.url}</div>
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:flex">
+            <CopyButton value={justCreated.url} className="btn btn-primary" />
+            <a className="btn btn-secondary" href={whatsappShareUrl(justCreated.url, justCreated.clientName)} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+            <Link href={`/app/reviews/${justCreated.id}`} className="btn btn-ghost col-span-2 sm:col-span-1">Track status →</Link>
+          </div>
+        </section>
+      ) : (
+      <div className="panel mb-2 px-4 py-4 text-[15px] text-muted">Your link will appear here after step 2, with Copy and WhatsApp buttons.</div>
+      )}
+
+      <div className="mt-10">
+      <section className="panel mb-6" aria-labelledby="links-h">
+        <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
+          <h2 id="links-h" className="m-0 flex items-center gap-2 text-[16px] font-bold">
+            Your review links
+            <span className="chip chip-accent">{reviews.length}</span>
+          </h2>
+          
+        </div>
+        {reviews.length === 0 ? (
+          <EmptyState
+            title="No review links yet"
+            body="Links you create show up here with their status: waiting, approved, or needs changes."
+          />
+        ) : (
+          <div className="links-grid">
+            {reviews.map((r) => <LinkCard key={r.id} review={r} />)}
+          </div>
+        )}
+      </section>
+      </div>
     </>
   );
 }
+
+function InlineCreate({
+  postIds,
+  channels,
+  selectedChannelId,
+  rangeStart,
+  rangeEnd,
+  defaultName,
+  disabled,
+  onCreated,
+}: {
+  postIds: string[];
+  channels: BufferChannel[];
+  selectedChannelId?: string;
+  rangeStart: string;
+  rangeEnd: string;
+  defaultName: string;
+  disabled: boolean;
+  onCreated: (c: { id: string; url: string; clientName: string }) => void;
+}) {
+  const router = useRouter();
+  const [clientName, setClientName] = useState(defaultName);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function create() {
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientName,
+          postIds,
+          channelIds: selectedChannelId ? [selectedChannelId] : channels.map((c) => c.id),
+          rangeStart,
+          rangeEnd,
+        }),
+      });
+      const json = (await res.json().catch(() => ({}))) as { error?: string; id?: string; url?: string };
+      if (!res.ok || !json.id || !json.url) {
+        setError(json.error || "Could not create the review link.");
+        return;
+      }
+      onCreated({ id: json.id, url: json.url, clientName: clientName.trim() });
+      router.refresh();
+    } catch {
+      setError("Network error — please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const n = postIds.length;
+  return (
+    <div className="panel p-4">
+      <label htmlFor="clientName" className="field-label">Client or campaign name</label>
+      <div className="mt-1 flex flex-col gap-3 sm:flex-row">
+        <input
+          id="clientName"
+          className="name-field flex-1"
+          value={clientName}
+          onChange={(e) => setClientName(e.target.value)}
+          maxLength={80}
+          placeholder="e.g. Casa Lekki"
+        />
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={create}
+          disabled={busy || disabled || n === 0 || !clientName.trim()}
+        >
+          {busy ? "Creating…" : `Create link for ${n} ${n === 1 ? "post" : "posts"}`}
+        </button>
+      </div>
+      <p className="m-0 mt-2 text-[13px] text-muted">
+        {n === 0 ? "Select at least one post in step 1." : "The link is private, needs no login, and expires in 30 days."}
+      </p>
+      {error ? <p role="alert" className="m-0 mt-2 text-[14px] font-medium text-danger">{error}</p> : null}
+    </div>
+  );
+}
+
 
 function LinkCard({ review }: { review: ManagerReview }) {
   const counts = progressCounts(review.posts);

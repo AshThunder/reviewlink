@@ -76,3 +76,17 @@ export function NoteMock() {
     </div>
   );
 }
+
+export function ConnectMock() {
+  return (
+    <div className="mk-panel" aria-hidden="true">
+      <div className="mk-panel-head"><b>Connect to Buffer</b><span className="mk-muted">buffer.com</span></div>
+      <div className="mk-perm">
+        <span className="mk-muted mk-small">ReviewLink would like to</span>
+        <span className="mk-line"><Check size={12} /> Read your scheduled posts</span>
+        <span className="mk-line"><Check size={12} /> Add notes to posts</span>
+      </div>
+      <div className="mk-actions"><span className="mk-sec">Cancel</span><span className="mk-send">Allow</span></div>
+    </div>
+  );
+}
