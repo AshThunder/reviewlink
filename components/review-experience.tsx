@@ -261,7 +261,7 @@ export function ReviewExperience({
           aria-labelledby="step1"
         >
           <div className="flex items-center gap-2">
-            <span className="step-num" aria-hidden="true">{nameMissing ? "1" : "✓"}</span>
+            <span className="step-num" aria-hidden="true">1</span>
             <h2 id="step1" className="m-0 text-[15px] font-bold">
               Step 1 · Tell us who’s reviewing
             </h2>
@@ -332,9 +332,9 @@ export function ReviewExperience({
                     Post {i + 1} of {initial.posts.length}
                   </span>
                   {d.decision === "approved" ? (
-                    <span className="badge badge-ok anim-pop">✓ Approved</span>
+                    <span className="badge badge-ok ">Approved</span>
                   ) : d.decision === "changes_requested" ? (
-                    <span className="badge badge-ch anim-pop">✎ Needs changes</span>
+                    <span className="badge badge-ch ">Needs changes</span>
                   ) : (
                     <span className="badge">Not reviewed</span>
                   )}
@@ -359,8 +359,8 @@ export function ReviewExperience({
                   ) : (
                     <div className={`decision-row ${d.decision === "approved" ? "is-ok" : "is-ch"}`} role="status">
                       <span className="decision-label">
-                        {d.decision === "approved" ? "✓ Approved" : "✎ Changes requested"}
-                        <span className="decision-saved">✓ saved</span>
+                        {d.decision === "approved" ? "Approved" : "Changes requested"}
+                        <span className="decision-saved">· Saved</span>
                       </span>
                       <button type="button" className="undo-link m-0" onClick={() => clearDecision(post.postId)} aria-label="Change decision">
                         Change
@@ -389,7 +389,7 @@ export function ReviewExperience({
                         )}
                         {d.comment.trim() ? (
                           <span className={`saved-tick ${saving[post.postId] === "saving" ? "is-saving" : ""}`} aria-live="polite">
-                            {saving[post.postId] === "saving" ? "Saving…" : "✓ Saved"}
+                            {saving[post.postId] === "saving" ? "Saving…" : "Saved"}
                           </span>
                         ) : null}
                       </p>
@@ -496,8 +496,8 @@ function ThanksState({
           {name ? `Thank you, ${name}.` : "Thank you."} They’ll see every decision as a note on the post in Buffer.
         </p>
         <div className="mt-6 flex gap-2">
-          <span className="badge badge-ok">✓ {approved} approved</span>
-          {changes ? <span className="badge badge-ch">✎ {changes} need changes</span> : null}
+          <span className="badge badge-ok">{approved} approved</span>
+          {changes ? <span className="badge badge-ch">{changes} need changes</span> : null}
         </div>
         <span className="stamp anim-stamp mt-8">Sent to Buffer</span>
         {syncErrors.length > 0 ? (
