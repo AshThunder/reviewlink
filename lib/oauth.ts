@@ -71,6 +71,7 @@ export function buildAuthorizeUrl(opts: {
     state: opts.state,
     code_challenge: opts.codeChallenge,
     code_challenge_method: "S256",
+    prompt: "consent",
   };
   if (opts.promptConsent) params.prompt = "consent";
   url.search = new URLSearchParams(params).toString();
@@ -158,9 +159,8 @@ export async function exchangeCodeForTokens(input: {
     code_verifier: input.codeVerifier,
   });
   if (!tokens.refreshToken) {
-    throw new Error(
-      "Buffer did not return a refresh token. Enable and request the offline_access scope, then Connect Buffer again.",
-    );
+    // Not fatal: the access token works for an hour; after that we ask to reconnect.
+    console.warn(JSON.stringify({ event: "oauth_no_refresh_token" }));
   }
   return tokens;
 }
