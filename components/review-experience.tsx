@@ -32,6 +32,45 @@ export function ReviewExperience({
   const [syncErrors, setSyncErrors] = useState<string[]>([]);
   const [nameError, setNameError] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
+  const [saving, setSaving] = useState<Record<string, "saving" | "saved">>({});
+  const saveTimers = useRef<Record<string, number>>({});
+  const draftKey = `reviewlink:draft:${initial.id}`;
+
+  // Restore an unsent draft (decisions + comments) for this link on this device.
+  useEffect(() => {
+    if (initial.status !== "open") return;
+    try {
+      const raw = localStorage.getItem(draftKey);
+      if (!raw) return;
+      const saved = JSON.parse(raw) as Record<string, LocalDecision>;
+      setItems((prev) => {
+        const next = { ...prev };
+        for (const p of initial.posts) {
+          const s = saved[p.postId];
+          if (s && (s.decision === "approved" || s.decision === "changes_requested" || s.decision === "pending")) {
+            next[p.postId] = { decision: s.decision, comment: String(s.comment ?? "").slice(0, 2000) };
+          }
+        }
+        return next;
+      });
+    } catch {
+      /* ignore */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftKey]);
+
+  // Auto-save the draft locally (debounced).
+  useEffect(() => {
+    if (initial.status !== "open" || submitted) return;
+    const h = window.setTimeout(() => {
+      try {
+        localStorage.setItem(draftKey, JSON.stringify(items));
+      } catch {
+        /* ignore */
+      }
+    }, 400);
+    return () => window.clearTimeout(h);
+  }, [items, draftKey, initial.status, submitted]);
 
   function requireName(): boolean {
     if (name.trim()) return true;
@@ -60,13 +99,30 @@ export function ReviewExperience({
     }
   }
 
+  function nextPending(afterId: string, state: Record<string, LocalDecision>): string | null {
+    const ids = initial.posts.map((p) => p.postId);
+    const start = ids.indexOf(afterId);
+    const order = [...ids.slice(start + 1), ...ids.slice(0, start)];
+    return order.find((id) => (state[id]?.decision ?? "pending") === "pending") ?? null;
+  }
+
+  function nudgeTo(id: string | null) {
+    if (!id) return;
+    window.setTimeout(() => {
+      document.getElementById(`post-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 350);
+  }
+
   function setDecision(postId: string, decision: Decision) {
     if (!requireName()) return;
-    setItems((prev) => {
-      const current = prev[postId] ?? { decision: "pending", comment: "" };
-      const next: Decision = current.decision === decision ? "pending" : decision;
-      return { ...prev, [postId]: { ...current, decision: next } };
-    });
+    const current = items[postId] ?? { decision: "pending" as Decision, comment: "" };
+    const nextState = { ...items, [postId]: { ...current, decision } };
+    setItems(nextState);
+    if (decision === "approved") nudgeTo(nextPending(postId, nextState));
+  }
+
+  function clearDecision(postId: string) {
+    setItems((prev) => ({ ...prev, [postId]: { decision: "pending", comment: prev[postId]?.comment ?? "" } }));
   }
 
   function setComment(postId: string, comment: string) {
@@ -74,6 +130,11 @@ export function ReviewExperience({
       ...prev,
       [postId]: { decision: prev[postId]?.decision ?? "pending", comment },
     }));
+    setSaving((s) => ({ ...s, [postId]: "saving" }));
+    window.clearTimeout(saveTimers.current[postId]);
+    saveTimers.current[postId] = window.setTimeout(() => {
+      setSaving((s) => ({ ...s, [postId]: "saved" }));
+    }, 600);
   }
 
   function approveRemaining() {
@@ -136,6 +197,11 @@ export function ReviewExperience({
       }
       const errs = (json.sync ?? []).filter((s) => s.noteError && !s.noteId).map((s) => s.noteError!);
       setSyncErrors(errs);
+      try {
+        localStorage.removeItem(draftKey);
+      } catch {
+        /* ignore */
+      }
       setSubmitted(true);
     } catch {
       setError("Network error — please check your connection and try again.");
@@ -275,30 +341,32 @@ export function ReviewExperience({
                 </div>
                 <PostPreview post={post} />
                 <div className="px-3.5 pb-3.5">
-                  <div className="mt-1 grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      className="act act-approve"
-                      aria-pressed={d.decision === "approved"}
-                      onClick={() => setDecision(post.postId, "approved")}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                        <path d="M3 8.2 L6.4 11.5 L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                      {d.decision === "approved" ? "Approved" : "Approve"}
-                    </button>
-                    <button
-                      type="button"
-                      className="act act-changes"
-                      aria-pressed={d.decision === "changes_requested"}
-                      onClick={() => setDecision(post.postId, "changes_requested")}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                        <path d="M10.8 2.7 13.3 5.2 5.6 12.9 2.5 13.5 3.1 10.4Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-                      </svg>
-                      {d.decision === "changes_requested" ? "Changes" : "Request changes"}
-                    </button>
-                  </div>
+                  {d.decision === "pending" ? (
+                    <div className="mt-1 grid grid-cols-2 gap-2">
+                      <button type="button" className="act act-approve" onClick={() => setDecision(post.postId, "approved")}>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                          <path d="M3 8.2 L6.4 11.5 L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        Approve
+                      </button>
+                      <button type="button" className="act act-changes" onClick={() => setDecision(post.postId, "changes_requested")}>
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                          <path d="M10.8 2.7 13.3 5.2 5.6 12.9 2.5 13.5 3.1 10.4Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+                        </svg>
+                        Request changes
+                      </button>
+                    </div>
+                  ) : (
+                    <div className={`decision-row ${d.decision === "approved" ? "is-ok" : "is-ch"}`} role="status">
+                      <span className="decision-label">
+                        {d.decision === "approved" ? "✓ Approved" : "✎ Changes requested"}
+                        <span className="decision-saved">✓ saved</span>
+                      </span>
+                      <button type="button" className="undo-link m-0" onClick={() => clearDecision(post.postId)} aria-label="Change decision">
+                        Change
+                      </button>
+                    </div>
+                  )}
                   {d.decision === "changes_requested" ? (
                     <div className="comment-box mt-3 block">
                       <label htmlFor={`c-${post.postId}`}>What should {initial.sharedBy} change?</label>
@@ -306,19 +374,26 @@ export function ReviewExperience({
                         id={`c-${post.postId}`}
                         value={d.comment}
                         onChange={(e) => setComment(post.postId, e.target.value)}
+                        onBlur={() => {
+                          if (d.comment.trim()) nudgeTo(nextPending(post.postId, items));
+                        }}
                         placeholder="A short note is enough — it lands on the post in Buffer."
                         maxLength={2000}
                         autoFocus={!d.comment}
                       />
-                      {!d.comment.trim() ? (
-                        <p className="m-0 mt-1 text-[12px] font-medium text-warning">A comment is required for changes.</p>
-                      ) : null}
+                      <p className="m-0 mt-1 flex items-center justify-between gap-2 text-[12px]">
+                        {!d.comment.trim() ? (
+                          <span className="font-medium text-warning">Add a comment so {initial.sharedBy} knows what to change.</span>
+                        ) : (
+                          <span className="text-muted">Saved automatically — you’ll send everything at the end.</span>
+                        )}
+                        {d.comment.trim() ? (
+                          <span className={`saved-tick ${saving[post.postId] === "saving" ? "is-saving" : ""}`} aria-live="polite">
+                            {saving[post.postId] === "saving" ? "Saving…" : "✓ Saved"}
+                          </span>
+                        ) : null}
+                      </p>
                     </div>
-                  ) : null}
-                  {d.decision !== "pending" ? (
-                    <button type="button" className="undo-link" onClick={() => setDecision(post.postId, d.decision)}>
-                      Undo
-                    </button>
                   ) : null}
                 </div>
               </article>
