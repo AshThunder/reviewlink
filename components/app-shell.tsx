@@ -20,10 +20,10 @@ export function AppShell({
         Skip to content
       </a>
       <header className="sticky top-0 z-10 h-16 border-b border-border bg-surface/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-full max-w-[1120px] items-center justify-between px-6 md:px-8">
+        <div className="mx-auto flex h-full max-w-[1120px] items-center justify-between px-4 sm:px-6 md:px-8">
           <Brand href="/app" />
           <div className="flex items-center gap-3">
-            <span className="chip chip-accent hidden sm:inline-flex">Buffer connected</span>
+            <span className="hidden md:block"><span className="chip chip-accent">Buffer connected</span></span>
             <div className="hidden text-right sm:block">
               <div className="text-[14px] font-semibold leading-tight">{name || "Your account"}</div>
               <div className="text-[12px] leading-tight text-muted">
@@ -44,7 +44,7 @@ export function AppShell({
           </div>
         </div>
       </header>
-      <div id="main" className="mx-auto max-w-[1120px] px-6 py-6 md:px-8 md:py-7">
+      <div id="main" className="mx-auto max-w-[1120px] px-4 py-5 sm:px-6 md:px-8 md:py-7">
         {children}
       </div>
     </div>

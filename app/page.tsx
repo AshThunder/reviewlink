@@ -3,6 +3,7 @@ import { OAuthBanner } from "@/components/oauth-banner";
 import { PhonePreview } from "@/components/phone-preview";
 import { getSession } from "@/lib/session";
 import Link from "next/link";
+import { HowBuilt } from "@/components/how-built";
 
 export const dynamic = "force-dynamic";
 
@@ -27,9 +28,10 @@ export default async function LandingPage({
               Open dashboard
             </Link>
           ) : (
-            <a href="/privacy" className="text-[13px] font-medium text-muted no-underline hover:text-text">
-              Privacy
-            </a>
+            <nav className="flex items-center gap-5 text-[13px] font-medium">
+              <a href="#how-its-built" className="text-muted no-underline hover:text-text">How it’s built</a>
+              <a href="/privacy" className="text-muted no-underline hover:text-text">Privacy</a>
+            </nav>
           )}
         </header>
 
@@ -66,8 +68,8 @@ export default async function LandingPage({
                 </a>
               )}
               <p className="m-0 text-[14px] text-muted">
-                Built on the Buffer API.{" "}
-                <strong className="font-semibold text-text">Your client never needs an account.</strong>
+                <strong className="font-semibold text-text">Your client never needs an account.</strong>{" "}
+                Built on the Buffer API · <a href="#how-its-built" className="font-semibold text-accent">How it’s built ↓</a>
               </p>
             </div>
           </div>
@@ -93,8 +95,10 @@ export default async function LandingPage({
           ))}
         </ol>
 
+        <HowBuilt />
+
         <footer className="flex flex-none flex-wrap items-center justify-between gap-3 border-t border-border py-5 text-[13px] text-muted">
-          <span>ReviewLink · Built on the Buffer API · Buffer Commit 2026</span>
+          <span>ReviewLink · Built on the Buffer API · Buffer Commit 2026 · <a href="https://github.com/AshThunder/reviewlink" className="font-medium text-muted">GitHub</a></span>
           <a href="/privacy" className="font-medium text-muted no-underline hover:text-text">
             Privacy
           </a>

@@ -248,7 +248,7 @@ export function validateDecisions(
     if (decision === "changes_requested" && !comment) {
       return { ok: false, error: "Please leave a short comment on every post that needs changes.", status: 400 };
     }
-    decisions.push({ postId, decision, comment });
+    decisions.push({ postId, decision, comment: decision === "changes_requested" ? comment : "" });
   }
 
   if (decisions.length !== review.posts.length) {

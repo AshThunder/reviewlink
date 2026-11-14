@@ -21,6 +21,7 @@ export function QueueDashboard({
   rangeEnd,
   loadError,
   pausedWarning,
+  initialCreated = null,
 }: {
   account: BufferAccount;
   channels: BufferChannel[];
@@ -31,6 +32,7 @@ export function QueueDashboard({
   rangeEnd: string;
   loadError?: string;
   pausedWarning?: string;
+  initialCreated?: { id: string; url: string; clientName: string } | null;
 }) {
   const tz = account.timezone || "Africa/Lagos";
   const label = weekLabel(rangeStart, rangeEnd, tz);
@@ -42,16 +44,18 @@ export function QueueDashboard({
     [posts, selected],
   );
   const [open, setOpen] = useState(false);
+  const [justCreated, setJustCreated] = useState<{ id: string; url: string; clientName: string } | null>(initialCreated);
 
   return (
     <>
       <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="m-0 text-[28px] font-bold leading-tight tracking-tight">This week’s queue</h1>
+          <h1 className="m-0 text-[26px] font-bold leading-tight tracking-tight sm:text-[28px]">Get this week approved</h1>
           <p className="m-0 mt-1.5 text-[15px] text-muted">
-            Pick a channel and a date range, then share a private review link with your client.
+            Pick posts from your Buffer queue, send one private link, and watch approvals come back as notes.
           </p>
         </div>
+        <div className="hidden lg:block">
         <button
           type="button"
           className="btn btn-primary"
@@ -61,7 +65,49 @@ export function QueueDashboard({
         >
           Create review link
         </button>
+        </div>
       </div>
+
+      {justCreated ? (
+        <section className="success-panel anim-fade-up mb-5" aria-live="polite">
+          <div className="flex items-start gap-3">
+            <span className="grid h-9 w-9 flex-none place-items-center rounded-[10px] bg-accent text-white" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M3 8.2 L6.4 11.5 L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </span>
+            <div className="min-w-0 flex-1">
+              <h2 className="m-0 text-[17px] font-bold tracking-tight">Review link ready for {justCreated.clientName}</h2>
+              <p className="m-0 mt-0.5 text-[14px] text-muted">Send it on WhatsApp or email. Private, no login, expires in 30 days.</p>
+            </div>
+            <button type="button" className="btn-ghost -mr-1 rounded-[8px] px-2 text-[20px] leading-none text-muted" aria-label="Dismiss" onClick={() => setJustCreated(null)}>×</button>
+          </div>
+          <div className="url-box mt-3" title={justCreated.url}>{justCreated.url}</div>
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:flex">
+            <CopyButton value={justCreated.url} className="btn btn-primary" />
+            <a className="btn btn-secondary" href={whatsappShareUrl(justCreated.url, justCreated.clientName)} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+            <Link href={`/app/reviews/${justCreated.id}`} className="btn btn-ghost col-span-2 sm:col-span-1">Track status →</Link>
+          </div>
+        </section>
+      ) : null}
+
+      <section className="panel mb-6" aria-labelledby="links-h">
+        <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
+          <h2 id="links-h" className="m-0 flex items-center gap-2 text-[16px] font-bold">
+            Review links
+            <span className="chip chip-accent">{reviews.length}</span>
+          </h2>
+          <span className="text-[12.5px] font-medium text-muted">Approvals land as Buffer notes</span>
+        </div>
+        {reviews.length === 0 ? (
+          <EmptyState
+            title="No review links yet"
+            body="Select posts below and tap Create review link. Progress — approved, pending, changes — shows up right here."
+          />
+        ) : (
+          <div className="links-grid">
+            {reviews.map((r) => <LinkCard key={r.id} review={r} />)}
+          </div>
+        )}
+      </section>
 
       {pausedWarning ? (
         <div
@@ -76,8 +122,7 @@ export function QueueDashboard({
         <Filters channels={channels} selectedChannelId={selectedChannelId} />
       ) : null}
 
-      <div className="grid items-start gap-6 lg:grid-cols-[1fr_340px]">
-        <section className="panel" aria-labelledby="posts-h">
+      <section className="panel mb-24 lg:mb-0" aria-labelledby="posts-h">
           <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
             <h2 id="posts-h" className="m-0 text-[15px] font-semibold">
               Scheduled posts
@@ -131,10 +176,11 @@ export function QueueDashboard({
                 const service = post.channelService || post.channel?.service;
                 const when = post.dueAt ? formatDueAt(post.dueAt, post.channel?.timezone || tz) : "Unscheduled";
                 const checked = Boolean(selected[post.id]);
+                const ch = post.channel || channels.find((c) => c.id === post.channelId);
                 return (
                   <label
                     key={post.id}
-                    className={`post-check grid cursor-pointer grid-cols-[24px_72px_1fr] items-center gap-3 border-b border-border px-4 py-2.5 last:border-b-0 transition-colors hover:bg-bg/80 ${checked ? "" : "opacity-70"}`}
+                    className={`post-check grid cursor-pointer grid-cols-[22px_40px_1fr] items-start gap-3 border-b border-border px-4 py-3.5 last:border-b-0 transition-colors hover:bg-bg/80 ${checked ? "" : "opacity-70"}`}
                   >
                     <input
                       type="checkbox"
@@ -142,22 +188,30 @@ export function QueueDashboard({
                       onChange={(e) => setSelected((s) => ({ ...s, [post.id]: e.target.checked }))}
                       aria-label={`Include post scheduled ${when}`}
                     />
-                    {post.thumbnailUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={post.thumbnailUrl} alt="" className="h-14 w-[72px] rounded-[8px] bg-bg object-cover" />
-                    ) : (
-                      <div className="grid h-14 w-[72px] place-items-center rounded-[8px] bg-bg text-muted" aria-hidden="true">
-                        <ServiceIcon service={service} size={20} />
-                      </div>
-                    )}
+                    <span className="relative flex-none">
+                      {ch?.avatar ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={ch.avatar} alt="" className="h-10 w-10 rounded-full object-cover" />
+                      ) : (
+                        <span className="grid h-10 w-10 place-items-center rounded-full bg-text text-[12px] font-bold text-white" aria-hidden="true">
+                          {(ch?.displayName || ch?.name || "B").slice(0, 2).toUpperCase()}
+                        </span>
+                      )}
+                      <span className="absolute -bottom-1 -right-1 rounded-full bg-surface p-[2px]"><ServiceIcon service={service} size={16} /></span>
+                    </span>
                     <div className="min-w-0">
-                      <div className="flex items-center gap-1.5 text-[12px] font-semibold text-muted">
-                        <ServiceIcon service={service} size={18} />
+                      <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-muted">
+                        <span className="text-text">{ch?.displayName || ch?.name || serviceLabel(service)}</span>
+                        <span aria-hidden="true">·</span>
                         {when}
                       </div>
-                      <p className="line-clamp-2 m-0 mt-0.5 text-[13.5px] leading-snug">
+                      <p className="line-clamp-3 m-0 mt-1 text-[14.5px] leading-snug">
                         {post.text || <span className="italic text-muted">No caption</span>}
                       </p>
+                      {post.thumbnailUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={post.thumbnailUrl} alt="" className="mt-2 h-20 w-full max-w-[220px] rounded-[10px] object-cover" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
+                      ) : null}
                     </div>
                   </label>
                 );
@@ -166,30 +220,18 @@ export function QueueDashboard({
           )}
         </section>
 
-        <aside>
-          <section className="panel" aria-labelledby="links-h">
-            <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
-              <h2 id="links-h" className="m-0 text-[15px] font-semibold">
-                Review links
-              </h2>
-              <span className="text-[13px] font-medium text-muted">
-                {reviews.length} {reviews.length === 1 ? "link" : "links"}
-              </span>
-            </div>
-            {reviews.length === 0 ? (
-              <EmptyState
-                title="None yet"
-                body="When you create a review link, it will show progress here — approved, pending, and changes requested."
-              />
-            ) : (
-              reviews.map((r) => <LinkCard key={r.id} review={r} />)
-            )}
-          </section>
-          <p className="m-0 mt-3 px-1 text-[13px] leading-relaxed text-muted">
-            Links expire in 30 days. Clients never see your Buffer login. Decisions write back as Notes on each post.
-          </p>
-        </aside>
-      </div>
+      {posts.length > 0 ? (
+        <div className="dash-sticky lg:hidden">
+          <button
+            type="button"
+            className="btn btn-primary w-full"
+            disabled={selectedIds.length === 0}
+            onClick={() => setOpen(true)}
+          >
+            Create review link · {selectedIds.length} {selectedIds.length === 1 ? "post" : "posts"}
+          </button>
+        </div>
+      ) : null}
 
       {open ? (
         <CreateLinkDialog
@@ -205,6 +247,11 @@ export function QueueDashboard({
             "Scheduled posts"
           }
           onClose={() => setOpen(false)}
+          onCreated={(c) => {
+            setJustCreated(c);
+            setOpen(false);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
         />
       ) : null}
     </>
@@ -257,6 +304,7 @@ function CreateLinkDialog({
   rangeEnd,
   defaultName,
   onClose,
+  onCreated,
 }: {
   posts: BufferPost[];
   postIds: string[];
@@ -266,6 +314,7 @@ function CreateLinkDialog({
   rangeEnd: string;
   defaultName: string;
   onClose: () => void;
+  onCreated: (c: { id: string; url: string; clientName: string }) => void;
 }) {
   const router = useRouter();
   const [clientName, setClientName] = useState(defaultName);
@@ -294,6 +343,7 @@ function CreateLinkDialog({
         return;
       }
       setCreated({ id: json.id, url: json.url });
+      onCreated({ id: json.id, url: json.url, clientName: clientName.trim() });
       router.refresh();
     } catch {
       setError("Network error — please try again.");
