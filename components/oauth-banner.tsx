@@ -29,7 +29,7 @@ const REASONS: Record<string, { title: string; body: string }> = {
   },
   scope: {
     title: "Buffer rejected a requested permission",
-    body: "We asked for account:read, channels:read, posts:read, notes:read, notes:write, and offline_access. If a scope isn’t enabled on the app client, it needs to be added — then Connect again.",
+    body: "We asked for account:read, posts:read, notes:read, notes:write, and offline_access. If a scope isn’t enabled on the app client, it needs to be added — then Connect again.",
   },
   account: {
     title: "Signed in, but we couldn’t load your account",

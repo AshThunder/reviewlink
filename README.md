@@ -56,7 +56,7 @@ Never commit `.env*` files or the client secret.
 
 ## Buffer API surface
 
-Scopes requested: `account:read`, `channels:read`, `posts:read`, `notes:read`, `notes:write`, `offline_access`.
+Scopes requested: `account:read`, `posts:read`, `notes:read`, `notes:write`, `offline_access`.
 
 Queries and mutations: `account`, `channels`, `posts` (scheduled, `dueAt` range), `createCollaborationNote`.
 

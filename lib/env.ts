@@ -6,7 +6,6 @@ export const API_URL = "https://api.buffer.com";
 
 export const BUFFER_SCOPES = [
   "account:read",
-  "channels:read",
   "posts:read",
   "notes:read",
   "notes:write",
