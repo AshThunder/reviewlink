@@ -4,19 +4,19 @@
 
 **Event:** [Buffer Commit](https://buffer.com/api/commit) 2026 · **Live:** https://reviewlink-commit.vercel.app · **How it's built:** [/#how-its-built](https://reviewlink-commit.vercel.app/#how-its-built)
 
+![ReviewLink landing page](screenshots/landing-1280x800.png)
+
 <p>
-  <img src="screenshots/review-390x844.png" alt="Client review page on a phone: posts marked Approved in green and Needs changes in amber" width="260">
+  <img src="screenshots/review-390x844-decided.png" alt="Client review page on a phone: one post Approved (green status row) and one with Changes requested and an auto-saved comment" width="260">
   &nbsp;
   <img src="screenshots/dashboard-390x844.png" alt="Manager dashboard on a phone: new review link ready, with copy and WhatsApp buttons" width="260">
 </p>
-
-![Landing page: How it's built section with the Buffer API flow](screenshots/landing-1280x800-how-its-built.png)
 
 ## For judges (2 minutes)
 
 1. Open https://reviewlink-commit.vercel.app and click **Connect Buffer** (OAuth with your own Buffer account; schedule a post or two first if your queue is empty).
 2. On the dashboard, pick the week, keep the scheduled posts ticked, and click **Create review link**. Copy the link.
-3. Open the link in a private window or on your phone. No login. Enter a name, **Approve** some posts, **Request changes** on one with a comment, then **Send**.
+3. Open the link in a private window or on your phone. No login. Fill in **Step 1 · Tell us who's reviewing**, **Approve** some posts, **Request changes** on one and type a comment, then tap **Send decisions** at the bottom.
 4. Back in the dashboard, open the link's status: per-post approved / changes / pending, with the Buffer note sync state.
 5. Open the post in Buffer (publish.buffer.com) and you'll see the note, e.g. `✅ Approved by Ngozi via ReviewLink`.
 
@@ -27,7 +27,11 @@ Freelancers and small agencies schedule a client's week in Buffer, then chase ap
 ## What it does
 
 - **Dashboard:** lists your scheduled posts for a channel and date range; select posts and create a private review link, then copy it or share it on WhatsApp.
-- **Public review page** `/r/<token>`: mobile-first feed of the posts as they'll appear on X, with scheduled times in the viewer's own time zone. A name step, then Approve / Request changes (comment required), progress bar, "approve all remaining", and a thank-you screen.
+- **Public review page** `/r/<token>`: mobile-first feed of the posts as they'll appear on X, with scheduled times in the viewer's own time zone.
+  - **Step 1 · Tell us who's reviewing:** a required name card. Tapping a decision without a name focuses and highlights it.
+  - **Step 2 · Review each post:** two neutral outline buttons, ✓ Approve and ✎ Request changes. Once chosen, they're replaced by a tinted status row (green "✓ Approved ✓ saved" or amber "✎ Changes requested ✓ saved") with a **Change** link, so a decision reads as a saved state, not another button to press.
+  - Change requests need a comment, which auto-saves (debounced, with a "✓ Saved" tick) and survives a reload on that device. After each decision the page scrolls to the next unreviewed post.
+  - The only primary action is **Send decisions** in the bottom bar, with progress and "approve all remaining". A confetti thank-you screen follows.
 - **Write-back:** each decision becomes a Buffer collaboration note on that post.
 - **Status view:** per-link progress (approved / needs changes / pending), note sync status, resync, and revoke.
 - Expired, revoked, and invalid link states. Links expire after 30 days.

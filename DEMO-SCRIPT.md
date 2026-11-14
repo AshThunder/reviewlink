@@ -8,25 +8,28 @@ Target length **1:50**; judges don't have to watch past 2:00. Everything is live
 - **Phone:** Do Not Disturb on, battery/notification bar tidy. Keep the old "Chris" link closed; you'll make a fresh one.
 - Use a realistic client name, e.g. **"Chris Gold — week of 16 Nov"**, and a real-sounding reviewer name, e.g. **"Ngozi"** (not "John" or "test").
 - Write the reviewer comment in advance: *"Love it — can we say 'this Saturday' instead of the date?"*
+- On the phone, open the link in a **private tab** so no saved name or draft from earlier tests is pre-filled (the Step 1 moment needs an empty name).
 - Do one full dry run. Then record the laptop and the phone separately and cut them together.
 
 ## Shot list
 
 | Time | Device | On-screen action | Voiceover |
 | --- | --- | --- | --- |
-| **0:00–0:08** | Laptop | Landing page hero ("Client approval without a Buffer login."), cursor resting on **Connect Buffer**. | "This is ReviewLink: client approval for your Buffer queue, without the client ever needing a Buffer login." |
-| **0:08–0:20** | Laptop (or phone) | Optional: a 3-second WhatsApp chat full of post screenshots and "change the 2nd one" (mock it with a friend), then cut back to the landing page. | "If you manage socials for clients, you know the pain: screenshots in WhatsApp, feedback scattered everywhere, then re-typing it all into Buffer." |
-| **0:20–0:38** | Laptop | Go to `/app` (already connected). Show the **@ChrisGold__** posts for 16–22 Nov, all ticked. Click **Create review link**, type "Chris Gold — week of 16 Nov", click **Create link**. The green **Review link ready** panel appears at the top; click **Copy link**. | "I connect Buffer once with OAuth. ReviewLink pulls my scheduled posts for the week through Buffer's API. I pick the posts, create one private link, and send it, on WhatsApp for example." |
-| **0:38–0:45** | Phone | Open the link (paste it into the phone browser or tap it in WhatsApp). Page loads: "Chris Gold — week of 16 Nov", **Step 1 · Tell us who's reviewing**. | "My client opens it on their phone. No account, no login." |
-| **0:45–0:52** | Phone | Tap **Approve** on post 1 *before* typing a name: the name card turns red with "Add your name first". Type **Ngozi**. | "First they say who's reviewing, so every decision carries a name." |
-| **0:52–1:12** | Phone | Tap **Approve** on posts 1–3 (each card turns green with ✓ Approved). On post 4, tap **Request changes** (it turns amber) and type the comment. Approve posts 5–6 (or tap **Approve all remaining**). Point at the progress bar: "6 of 6 reviewed". | "Each post shows exactly how it'll look on X, at the scheduled time in their own time zone. Green is approved; amber means changes, with a comment." |
-| **1:12–1:20** | Phone | Tap **Send decisions to …**. Thank-you screen with confetti and the **Sent to Buffer** stamp. | "One tap to send." |
-| **1:20–1:32** | Laptop | Refresh `/app`. The new link at the top shows **Needs changes** with "5 of 6 approved". Open it: the status page shows each post as approved / changes, the comment, and that notes synced. | "Back on my side, I see the result straight away: five approved, one change, and the client's comment." |
-| **1:32–1:45** | Laptop | Switch to the publish.buffer.com tab, open the post with the requested change, and show its note: **"✏️ Changes requested by Ngozi: … (via ReviewLink)"**. Then show one **"✅ Approved by Ngozi via ReviewLink"**. Hold for 2 seconds. | "And here's the magic: every decision is already in Buffer, as a note on the post, written with Buffer's createCollaborationNote API. No copy-paste." |
-| **1:45–1:55** | Laptop | Scroll the landing page to **How it's built** (flow diagram + stack cards). | "It's built on Buffer's GraphQL API with OAuth and PKCE, read-only on posts, with notes write-back, on Next.js, Vercel and Upstash Redis, with encrypted tokens and unguessable links." |
-| **1:55–2:00** | Laptop | End card: reviewlink-commit.vercel.app · github.com/AshThunder/reviewlink | "ReviewLink. Try it at reviewlink-commit.vercel.app. Thanks!" |
+| **0:00–0:08** | Laptop | Landing hero: "New · Client decisions land in Buffer as notes" pill, the big headline "Client approval, without a Buffer login.", and the phone preview on the soft gradient panel below. Cursor rests on **Connect Buffer**. | "This is ReviewLink: client approval for your Buffer queue, without the client ever needing a Buffer login." |
+| **0:08–0:18** | Laptop | Scroll once to **How it works** (Pick your posts → Share one link → Decisions land in Buffer). | "If you manage socials for clients, you know the pain: screenshots in WhatsApp, feedback everywhere, then re-typing it all into Buffer. ReviewLink is three steps." |
+| **0:18–0:36** | Laptop | Go to `/app` (already connected). The @ChrisGold__ posts for 16–22 Nov are listed, all ticked. Click **Create review link**, type "Chris Gold — week of 16 Nov", click **Create link**. The green **Review link ready** panel appears at the top of the page; click **Copy link** (or WhatsApp). | "I connect Buffer once, and ReviewLink pulls my scheduled posts through Buffer's API. I pick the posts, create one private link, and send it, on WhatsApp for example." |
+| **0:36–0:46** | Phone | Open the link. The page shows "Chris Gold — week of 16 Nov" and the **Step 1 · Tell us who's reviewing** card. Tap **Approve** on post 1 *before* typing a name: the card turns red, "Add your name first…". Type **Ngozi**. | "My client opens it on their phone. No account, no login. They just say who's reviewing, so every decision carries a name." |
+| **0:46–0:56** | Phone | Tap **✓ Approve** on post 1. The buttons become a green **"✓ Approved ✓ saved"** row with a **Change** link, and the page glides to post 2. Approve post 2 the same way. | "Each post looks exactly as it will on X, at the scheduled time in their own time zone. One tap to approve. It's saved, and it moves on to the next one." |
+| **0:56–1:10** | Phone | On post 3, tap **✎ Request changes**. An amber **"✎ Changes requested ✓ saved"** row appears with the comment box "What should Chris change?". Type the comment; the **✓ Saved** tick shows, with "Saved automatically — you'll send everything at the end". | "Need a change? They say what. It saves automatically. Nothing else to press." |
+| **1:10–1:18** | Phone | Tap **Approve all remaining** in the bottom bar. The bar reads "6 of 6 reviewed". Tap **Send decisions to …**, and the thank-you screen appears with confetti and the **Sent to Buffer** stamp. | "When they're done, one button sends everything." |
+| **1:18–1:30** | Laptop | Refresh `/app`. The new link at the top shows **Needs changes**, 5 of 6 approved. Open it: per-post status, the client's comment, and synced notes. | "On my side, I see it instantly: five approved, one change, with the comment." |
+| **1:30–1:44** | Laptop | Switch to publish.buffer.com, open the post with the change, and show its note: **"✏️ Changes requested by Ngozi: … (via ReviewLink)"**. Then show an approved post's **"✅ Approved by Ngozi via ReviewLink"**. Hold for 2 seconds. | "And every decision is already in Buffer, as a note on the post, written with Buffer's API. No copy-paste." |
+| **1:44–1:54** | Laptop | Back on the landing page, scroll to the bottom and click **Under the hood · for developers & judges** to open it, showing the flow diagram and stack cards. | "Under the hood: Buffer's GraphQL API with OAuth and PKCE, read-only on posts, notes write-back, on Next.js, Vercel and Upstash Redis." |
+| **1:54–2:00** | Laptop | End card: reviewlink-commit.vercel.app · github.com/AshThunder/reviewlink | "ReviewLink. Try it at reviewlink-commit.vercel.app. Thanks!" |
 
-If you're running long, cut the 0:08–0:20 problem shot and say the problem line over the landing page.
+If you're running long, drop the 0:08–0:18 scroll and say the problem line over the hero.
+
+**Note:** the manager name in "What should … change?" and "Send decisions to …" is the first name on the Buffer account, so it may read differently from "Chris". That's fine; say whatever appears.
 
 ## Recording tips (free tools)
 
