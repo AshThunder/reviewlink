@@ -192,7 +192,7 @@ export function QueueDashboard({
             </span>
             <div className="min-w-0 flex-1">
               <h2 className="m-0 text-[17px] font-bold tracking-tight">Review link ready for {justCreated.clientName}</h2>
-              <p className="m-0 mt-0.5 text-[14px] text-muted">Send it on WhatsApp or email. Private, no login, expires in 30 days.</p>
+              <p className="m-0 mt-0.5 text-[14px] text-muted">Share it anywhere: WhatsApp, Slack, email or text. Private, no login, expires in 30 days.</p>
             </div>
             <button type="button" className="btn-ghost -mr-1 rounded-[8px] px-2 text-[20px] leading-none text-muted" aria-label="Dismiss" onClick={() => setJustCreated(null)}>×</button>
           </div>
@@ -474,7 +474,7 @@ function CreateLinkDialog({
               Link ready
             </h2>
             <p className="mt-2 text-[14px] leading-relaxed text-muted">
-              Send this to your client on WhatsApp or email. It’s unguessable, and expires in 30 days.
+              Share this with your client anywhere: WhatsApp, Slack, email or text. It’s unguessable, and expires in 30 days.
             </p>
             <div className="url-box mt-4" title={created.url}>
               {created.url}

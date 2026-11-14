@@ -75,7 +75,7 @@ export default async function LandingPage({
               <li>
                 <div className="lp-tile lp-step-tile"><LinkMock /></div>
                 <h3 className="lp-h3"><span className="lp-n">2</span>Pick posts and share a link</h3>
-                <p className="lp-body">Choose the week’s posts and send one private link on WhatsApp or email.</p>
+                <p className="lp-body">Choose the week’s posts and share one private link however you talk to your client.</p>
               </li>
               <li>
                 <div className="lp-tile lp-step-tile"><NoteMock /></div>
